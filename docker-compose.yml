@@ -1,0 +1,28 @@
+version: '3'
+
+volumes:
+  db-data:
+
+services:
+  web:
+    build: .                  # docker build . と同じ
+    ports:
+      - '3000:3000'            # docker run -p 3000:3000 と同じ
+    volumes:
+      - '.:/Rails_test08'     # docker run -v ~/C:/docker/Rails_test08:/Rails_test08 と同じ
+    environment:
+      - 'DATABASE_PASSWORD=postgres'
+    tty: true                 # docker run -it のtと同じ
+    stdin_open: true          # docker run -it のiと同じ
+    depends_on: 
+      - db
+    links: 
+      - db
+
+  db:
+    image: postgres
+    volumes: 
+      # ホスト上db-data コンテナ上/var/lib/postgresql/data
+      # ホスト上のパスはdocker volumeで仮想に作成したもの
+      # docker volume ls で確認
+      - 'db-data:/var/lib/postgresql/data'
